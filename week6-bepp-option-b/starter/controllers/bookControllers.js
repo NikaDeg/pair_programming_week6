@@ -11,13 +11,27 @@ const getAllBooks = async (req, res) => {
   }
 };
 
-// POST /books
+// // POST /books
+// const createBook = async (req, res) => {
+//   try {
+//     const newBook = await Book.create({ ...req.body });
+//     res.status(201).json(newBook);
+//   } catch (error) {
+//     res.status(400).json({ message: 'Failed to create book', error: error.message });
+//   }
+// };
 const createBook = async (req, res) => {
   try {
-    const newBook = await Book.create({ ...req.body });
+    const user_id = req.user._id;
+    const newBook = new Book({
+      ...req.body,
+      user_id,
+    });
+    await newBook.save();
     res.status(201).json(newBook);
   } catch (error) {
-    res.status(400).json({ message: 'Failed to create book', error: error.message });
+    console.error('Error creating book:', error);
+    res.status(500).json({ error: 'Server Error' });
   }
 };
 
