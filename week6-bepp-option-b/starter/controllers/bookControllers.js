@@ -23,7 +23,26 @@ const createBook = async (req, res) => {
 
 // GET /books/:bookId
 const getBookById = async (req, res) => {
-  res.send('getBookById');
+  const { bookId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    return res.status(400).json({message: "Invalid ID"})
+  }
+
+  // question about ID:
+  try{
+    const book = await Book.findById({_id : bookId});
+    if (book){
+      res.status(200).json(book)
+    } else{
+      res.status(404).json({message:"Book not foud"})
+    }
+
+  }catch(error){
+    res.status(400).json({message: "Failed "})
+  }
+
+
 };
 
 // PUT /books/:bookId
