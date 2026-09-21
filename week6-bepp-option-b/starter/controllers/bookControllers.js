@@ -26,28 +26,43 @@ const getBookById = async (req, res) => {
   const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
-    return res.status(400).json({message: "Invalid ID"})
+    return res.status(400).json({ message: 'Invalid ID' });
   }
 
   // question about ID:
-  try{
-    const book = await Book.findById({_id : bookId});
-    if (book){
-      res.status(200).json(book)
-    } else{
-      res.status(404).json({message:"Book not foud"})
+  try {
+    const book = await Book.findById({ _id: bookId });
+    if (book) {
+      res.status(200).json(book);
+    } else {
+      res.status(404).json({ message: 'Book not foud' });
     }
-
-  }catch(error){
-    res.status(400).json({message: "Failed "})
+  } catch (error) {
+    res.status(400).json({ message: 'Failed ' });
   }
-
-
 };
 
 // PUT /books/:bookId
 const updateBook = async (req, res) => {
-  res.send('updateBook');
+  const { bookId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    res.status(400).json({ message: 'Invalid book Id' });
+  }
+
+  try {
+    const updateBook = await Book.findOneAndUpdate(
+      { _id: bookId },
+      { ...req.body },
+      { returnDocument: 'after' },
+    );
+    if (updateBook) {
+      res.status(200).json(updateBook);
+    } else {
+      res.status(404).json({ message: 'Book not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'failed to update' });
+  }
 };
 
 // DELETE /books/:bookId
