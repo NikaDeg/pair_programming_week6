@@ -2,6 +2,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const EditBookPage = () => {
+  //token
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = user ? user.token : null;
+
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [isbn, setIsbn] = useState('');
@@ -33,7 +37,7 @@ const EditBookPage = () => {
     try {
       const res = await fetch(`/api/books/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(updatedBook),
       });
       if (!res.ok) throw new Error('Failed to update book');

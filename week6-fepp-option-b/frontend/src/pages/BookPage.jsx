@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-const BookPage = () => {
+
+const BookPage = ({ isAuthenticated }) => {
+  // token read
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = user ? user.token : null;
+
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,8 +33,12 @@ const BookPage = () => {
     try {
       const res = await fetch(`/api/books/${bookId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (!res.ok) throw new Error('Failed to delete book');
+      navigate('/');
     } catch (error) {
       console.error('Error deleting book:', error);
     }
@@ -59,8 +68,12 @@ const BookPage = () => {
               : '—'}
           </p>
           <p>Borrower: {book.availability.borrower || '—'}</p>
-          <button onClick={() => onDeleteClick(book._id)}>Delete</button>
-          <button onClick={() => navigate(`/edit-book/${book._id}`)}>EDIT</button>
+          {isAuthenticated && (
+            <>
+              <button onClick={() => navigate(`/edit-book/${book._id}`)}>Edit</button>
+              <button onClick={() => onDeleteClick(book._id)}>Delete</button>
+            </>
+          )}
           <button onClick={() => navigate('/')}>BACK</button>
         </div>
       )}

@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    const response = await fetch("/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('/api/users/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
     const user = await response.json();
@@ -23,9 +23,10 @@ const Login = () => {
       return;
     }
 
-    localStorage.setItem("user", JSON.stringify(user));
-    console.log("success");
-    navigate("/");
+    localStorage.setItem('user', JSON.stringify(user));
+    console.log('success');
+    setIsAuthenticated(true);
+    navigate('/');
   };
 
   return (
