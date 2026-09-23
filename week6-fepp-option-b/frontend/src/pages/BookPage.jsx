@@ -27,22 +27,20 @@ const BookPage = () => {
   const deleteBook = async (bookId) => {
     try {
       const res = await fetch(`/api/books/${bookId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
-      if (!res.ok) throw new Error("Failed to delete book");
+      if (!res.ok) throw new Error('Failed to delete book');
     } catch (error) {
-      console.error("Error deleting book:", error);
+      console.error('Error deleting book:', error);
     }
   };
 
   const onDeleteClick = (bookId) => {
-    const confirm = window.confirm("Are you sure you want to delete this book?");
+    const confirm = window.confirm('Are you sure you want to delete this book?');
     if (!confirm) return;
     deleteBook(bookId);
-    navigate("/");
+    navigate('/');
   };
-
-
 
   return (
     <div className="book-preview">
@@ -62,6 +60,7 @@ const BookPage = () => {
           </p>
           <p>Borrower: {book.availability.borrower || '—'}</p>
           <button onClick={() => onDeleteClick(book._id)}>Delete</button>
+          <button onClick={() => navigate(`/edit-book/${book._id}`)}>EDIT</button>
           <button onClick={() => navigate('/')}>BACK</button>
         </div>
       )}
